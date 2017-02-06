@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<!-- data source -->
+<!-- 		<!-- 配置数据源相关的信息 --> -->
+<!-- 	<environments default="demo"> -->
+<!-- 		<environment id="demo"> -->
+<!-- 			<transactionManager type="JDBC" /> -->
+<!-- 			<dataSource type="POOLED"> -->
+<!-- 				<property name="driver" value=… /> -->
+<!-- 				<property name="url" value=… /> -->
+<!-- 				<property name="username" value="root" /> -->
+<!-- 				<property name="password" value="root" /> -->
+<!-- 			</dataSource> -->
+<!-- 		</environment> -->
+<!-- 	</environments> -->
+<!-- 	<!-- 列出映射文件 --> -->
+<!-- 	<mappers> -->
+<!-- 		<mapper resource="footmark/mybatis/demo/UserInfoMapper.xml" /> -->
+<!-- 	</mappers> -->
+	
+	
+	<!-- JDBC 数据源 -->
+	<bean id="jdbcDataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>org.gjt.mm.mysql.Driver</value>
+		</property>
+		<property name="url">
+<!-- 		<value>jdbc:mysql://localhost:3306/concentric?useUnicode=true&amp;characterEncoding=UTF-8</value> -->
+			<value>jdbc:mysql://localhost:3306/concentric</value>
+			<!--springmybaitis是我的数据库 -->
+		</property>
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value></value>
+		</property>
+	</bean>
+	<!-- 事物管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="jdbcDataSource" />
+	</bean> 
+	<!-- JNDI 数据源 -->
+<!-- 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!-- 		<property name="jndiName"> -->
+<!-- 			<value>java:comp/env/concenttric</value> -->
+<!-- 		</property> -->
+<!--     </bean> -->
+	
+	<!-- session 工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  <!-- (必需) -->
+		<property name="dataSource" ref="jdbcDataSource" />                         <!-- (必需)   spring中数据源引用 -->
+		<property name="configLocation" value="classpath:mysql/mybatis/comfig/mybatis-config.xml"></property>
+	</bean>
+	
+	<!-- 使用mybatis进行数据处理的四种方式  :SqlSessionTemplate/SqlSessionDaoSupport/MapperFactoryBean/MapperScannerConfigure -->
+	<!--使用MapperFactoryBean 操作数据库 -->
+	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="org.concentric.dao.FtUserDao"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean> 
+
+
+	<!-- 使用SqlSessionTemplate 操作数据库  -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+		<constructor-arg index="1" value="BATCH" /><!--- 如果想要进行批量操作可加入这个属性 -->
+	</bean> 
+	
+	<!-- 使用 SqlSessionDaoSupport 只要继承SqlSessionDaoSupport类即可使用 -->
+	
+	<!-- 使用MapperScannerConfigurer  -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="org.concentric.dao" />
+	</bean> 
+	
+</beans> 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<!-- data source -->
+	<!-- JDBC 数据源 -->
+	<bean id="jdbcDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>org.gjt.mm.mysql.Driver</value>
+		</property>
+		<property name="url">
+			<value>jdbc:mysql://localhost:3306/concentric</value>
+		</property>
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value></value>
+		</property>
+	</bean>
+	
+	<!-- 事物管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="jdbcDataSource" />
+	</bean>
+	
+	<!-- JNDI 数据源 -->
+<!-- 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!-- 		<property name="jndiName"> -->
+<!-- 			<value>java:comp/env/concenttric</value> -->
+<!-- 		</property> -->
+<!--     </bean> -->
+	
+	<!-- Spring 对ibatis的管理     可以继承SqlMapClientDaoSupport类，调用getSqlMapClientTemplate()方法 -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:mysql/ibatis/sqlMapConfig.xml</value>
+		</property>  
+		<property name="dataSource" ref="jdbcDataSource" />
+	</bean>  
+
+	<!-- 可以设置配置文件 -->
+<!-- 	<bean id="propertyConfigurer"   -->
+<!--         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">   -->
+<!--         <property name="locations">   -->
+<!--             <list>   -->
+<!--                 <value>classpath*:jdbc/jdbc.properties</value>   -->
+<!--             </list>   -->
+<!--         </property>   -->
+<!--     </bean>   -->
+
+
+	<bean class="com.concentric.dao.FtUserDaoImpl">
+		<property name="dataSource">
+			<ref bean="jdbcDataSource" />
+		</property>
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+</beans> 

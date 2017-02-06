@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig   
+PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"   
+"http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!-- SqlMapClient.xml里本应该有数据源的配置的 使用spring之后数据源的配置移植到了spring上 -->
+
+	<sqlMap resource="mysql/ibatis/config/userDAO.xml" />
+
+</sqlMapConfig>  
